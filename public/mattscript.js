@@ -1,7 +1,7 @@
 var url = window.location.href;
 var arr = url.split("/");
 var result = arr[0] + "//" + arr[2];
-var socket = io.connect("https://huskie-hack-bhargav-y.c9users.io");
+var socket = io.connect("https://newsmood.herokuapp.com");
 
 var codeToArticles = [];
 
