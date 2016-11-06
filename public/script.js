@@ -17,6 +17,8 @@ var selectedCountry = "";
 var articleNumber = 0;
 var rowNumber = 0;
 var roww;
+var WORLD_SENTIMENT = 250;
+var countries_loaded = 0;
 var colors = {
   "US": 0,
   "RU": 0,
@@ -106,13 +108,24 @@ google.charts.load('current', {
   packages:['geochart']
 });
 
+function updateWorldHappiness() {
+  var sum = 0;
+  for (var countryName in countries) {
+    sum += countries[countryName].overall_sentiment;
+  }
+  var average = (sum) / countries_loaded; // subtract 500 for the country that stays at 500
+  $(".overall").text("Overall World Happiness(-250 to 250): " + average);
+}
+
 socket.on("info data", function(data){
     region = regionNameToLetters[data["region"]];
     objects = data["articleObjects"];
     average = regionAverage(objects);
     showCountry(region, average);
+    countries_loaded++;
     
     var newObject = new countryObject();
+    newObject.overall_sentiment = average;
     console.log("received region: " + region);
     
     for(var i=0;i<objects.length;i++)
@@ -122,6 +135,8 @@ socket.on("info data", function(data){
     	newObject.urls.push(objects[i].url);
     }
     countries[region] = newObject;
+    
+    updateWorldHappiness();
 });
 
 function regionAverage(objects) {
