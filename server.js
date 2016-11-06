@@ -33,7 +33,6 @@ io.on('connection', function(socket) {
           url: newObject["url"]
         };
         
-        if (!cache.hasOwnProperty(newObject["url"]) && false) {
             request(articleOptions, function(error, response, articleHTML) {
                 newObject["sentiment"] = sentiment(articleHTML);
                 articleObjects[socket.currentIteration] = newObject;
@@ -49,22 +48,6 @@ io.on('connection', function(socket) {
                     next(code, data);
                 }
             });
-        } else {
-            var articleHTML = cache[newObject["url"]];
-            newObject["sentiment"] = sentiment(articleHTML);
-            articleObjects[socket.currentIteration] = newObject;
-            
-            socket.currentIteration++;
-            if (socket.currentIteration == data.value.length) {
-                var dataObject = {
-                    "articleObjects": articleObjects,
-                    "region": code
-                };
-                socket.emit("info data", dataObject)
-            } else {
-                next(code, data);
-            }
-        }
     }
     
     function getArticles(countryCode, callback) {
@@ -77,22 +60,15 @@ io.on('connection', function(socket) {
           }
         };
         
-        if (!cache.hasOwnProperty(url) && false) {
-            request(options, function(error, response, data) {
-                console.log(data);
-                
-                cache[url] = data;
-                
-                data = JSON.parse(data);
-                
-                next(countryCode, data);
-            });
-        } else {
-            console.log("opened cache");
-            var data = JSON.parse(cache[url]);
-                
+        request(options, function(error, response, data) {
+            console.log(data);
+            
+            cache[url] = data;
+            
+            data = JSON.parse(data);
+            
             next(countryCode, data);
-        }
+        });
         
     }
     
