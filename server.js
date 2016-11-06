@@ -128,8 +128,18 @@ function send404Response(response) {
     response.end();
 };
 
+/* Files that are static and need to be served */
+app.get('/', function(req, res) {
+    res.sendfile(__dirname + "/public/index.html")
+});
 
-app.use(express.static(__dirname + '/public'));
+app.get('/main.css', function(req, res) {
+    res.sendfile(__dirname + "/public/main.css")
+});
+
+app.get('/script.js', function(req, res) {
+    res.sendfile(__dirname + "/public/script.js")
+});
 
 server.listen(process.env.PORT, function() {
     console.log("Listening on 3000...");
@@ -137,3 +147,7 @@ server.listen(process.env.PORT, function() {
       console.log(translation);
     });
 });
+
+
+
+
