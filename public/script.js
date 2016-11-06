@@ -1,5 +1,6 @@
 function showNews()
 {
-        document.write(document.getElementById('welcomeDiv').style.display = "block");
+        document.write("fuck");
+        document.getElementById('welcomeDiv').style.display = "block"
 }
 
