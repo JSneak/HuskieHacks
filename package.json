@@ -1,34 +1,14 @@
 {
-  "name": "News Visual",
+  "name": "news-visual",
   "version": "0.0.0",
   "description": "Displaying news",
   "main": "server.js",
   "repository": {
 	"type": "git",
-	"url": "https://github.com/JSneak/HuskieHacks.git"
+	  "url": "https://github.com/JSneak/HuskieHacks.git"
 	},
   "scripts": {
-	"start": "node server.js"
-  },
-  "author": "HuskieHack Squad",
-  "dependencies": {
-    "express": "~3.2.4",
-    "request": "^2.78.0",
-    "sentiment": "^2.1.0",
-    "socket.io": "^1.0.6"
-  }
-}
-{
-  "name": "News Visual",
-  "version": "0.0.0",
-  "description": "Displaying news",
-  "main": "server.js",
-  "repository": {
-	  "type": "git",
-	  "url": "https://github.com/JSneak/HuskieHacks.git"
-	}
-  "scripts": {
-	"start": "node server.js"
+	  "start": "node server.js"
   },
   "author": "HuskieHack Squad",
   "dependencies": {
