@@ -1,6 +1,6 @@
 function showNews()
 {
-        document.write("fuck");
+        document.getElementById('regions_div').style.display = "hide"
         document.getElementById('welcomeDiv').style.display = "block"
 }
 
