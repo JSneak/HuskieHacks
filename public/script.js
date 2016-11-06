@@ -1,6 +1,5 @@
 function showNews()
 {
-       document.getElementById('welcomeDiv').style.display = "block";
-
+        document.write(document.getElementById('welcomeDiv').style.display = "block");
 }
 

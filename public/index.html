@@ -15,7 +15,7 @@
   callback: function () {
     var data = google.visualization.arrayToDataTable([
       ['Country', 'Popularity', 'Domain'],
-      ['US', 600, 'www.nba.com'],
+      ['US', 600, ''],
       ['RU', 200, 'www.google.com'],
       ['GB', 300, 'www.nfl.com'],
       ['FR', 100, 'www.nhl.com'],
@@ -53,6 +53,7 @@
     var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
 
     google.visualization.events.addListener(chart, 'select', function () {
+      showNews();
       var selection = chart.getSelection();
       if (selection.length > 0) {
         window.open('http://' + data.getValue(selection[0].row, 2), '_blank');
@@ -126,7 +127,8 @@
 </div>
     <!------ END OF SIDEBAR CODE ---->
 
-  <div class="container">
+  <div class="container" id="welcomeDiv" style="display:none;" 
+  </style>>
     <section>
   <!--for demo wrap-->
   <h1>Fixed Table header</h1>
