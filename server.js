@@ -13,27 +13,36 @@ var usernameToSocket = {};
 
 var countryCodes = ["en-us", "de-de", "en-au", "en-ca", "es-es", "en-gb", "en-ie", "en-in", "es-mx", "en-nz", "fr-ca", "fr-fr", "it-it", "ja-jp", "nl-nl", "pt-br", "zh-cn"];
 
+
 io.on('connection', function(socket) {
     console.log("connection");
     
     socket.currentIteration = 0;
-    var articleObjects = {};
+    socket.articleObjects = {};
+    socket.done = true;
+    socket.nextCountryCode = -1;
+    socket.shouldStart = false;
+    
+    socket.on("start", function(data) {
+        socket.shouldStart = true;
+    });
     
     function translate(str) {
         //var url = "https://www.googleapis.com/language/translate/v2?key=" + api_key + "&q=hello%20world&source=en";
         return str;
     }
     
-    function next(code, data, first) {
-        if (data.value === undefined) {
-            console.log("Error on line 29 of server.js");
+    function next() {
+        if (socket.data.value === undefined) {
+            console.log("Error on line 32 of server.js");
             return;
         }
         
-        if (first) {
-            articleObjects[code] = [];
+        if (socket.first) {
+            socket.articleObjects[socket.code] = [];
+            socket.first = false;
         }
-        var articleObject = data.value[socket.currentIteration];
+        var articleObject = socket.data.value[socket.currentIteration];
         var newObject = {};
         
         if (articleObject !== undefined) {
@@ -48,51 +57,66 @@ io.on('connection', function(socket) {
           url: newObject["url"]
         };
         
-            request(articleOptions, function(error, response, articleHTML) {
-                newObject["sentiment"] = sentiment(translate(articleHTML));
-                articleObjects[code][socket.currentIteration] = newObject;
-                
-                socket.currentIteration++;
-                if (socket.currentIteration == data.value.length) {
-                    var dataObject = {
-                        "articleObjects": articleObjects[code],
-                        "region": code
-                    };
-                    socket.emit("info data", dataObject);
-                    articleObjects[code] = [];
-                    return;
-                } else {
-                    next(code, data, first);
-                }
-            });
+        request(articleOptions, function(error, response, articleHTML) {
+            newObject["sentiment"] = sentiment(articleHTML);
+            socket.articleObjects[socket.code][socket.currentIteration] = newObject;
+            
+            socket.currentIteration++;
+            if (socket.currentIteration == socket.data.value.length) {
+                var dataObject = {
+                    "articleObjects": socket.articleObjects[socket.code],
+                    "region": socket.code
+                };
+                socket.emit("info data", dataObject);
+                socket.articleObjects[socket.code] = [];
+                console.log("sent");
+                socket.done = true;
+                socket.currentIteration = 0;
+                return;
+            } else {
+                setTimeout(function() {next();}, 10);
+                console.log(socket.currentIteration);
+            }
+        });
     }
     
     function getArticles(countryCode, callback) {
-        var url = "https://api.cognitive.microsoft.com/bing/v5.0/news/?market=" + countryCode + "&q=";
+        var url = "https://api.cognitive.microsoft.com/bing/v5.0/news/?count=10&market=" + countryCode + "&q=";
         
         var options = {
           url: url,
           headers: {
-            'Ocp-Apim-Subscription-Key': 'c9fd1ddb6fd24e2ead14c004aac22a3e'
+            'Ocp-Apim-Subscription-Key': 'eafc9fb746b14f14800a969b09915c82'
           }
         };
+        
         
         request(options, function(error, response, data) {
             
             data = JSON.parse(data);
-            
-            next(countryCode, data, true);
+            socket.code = countryCode;
+            socket.data = data;
+            socket.first = true;
+            next();
         });
+        
         
     }
     
-    getArticles(countryCodes[1], function(data) {
-        console.log(data);
-    });
-    
-    getArticles(countryCodes[0], function(data) {
-        console.log(data);
-    });
+    socket.interval = setInterval(function() {
+        if (socket.done && socket.shouldStart) {
+            console.log("hello");
+            socket.nextCountryCode++;
+            if (socket.nextCountryCode >= countryCodes.length) {
+                socket.done = false;
+                return;
+            }
+            socket.done = false;
+            getArticles(countryCodes[socket.nextCountryCode], function(data) {
+                console.log(data);
+            });
+        }
+    }, 2000);
     
 });
 
