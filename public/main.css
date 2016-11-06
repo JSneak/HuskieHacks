@@ -11,10 +11,15 @@
     
 }
 
+#tableBoss
+{
+  margin-left: 400px;
+}
+
 #regions_div
 {
-	margin-left: 250px;
-    width: 90%;
+	margin-left: 240px;
+    width: 83%;
     height: 720px;
 }
 

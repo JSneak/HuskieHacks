@@ -7,45 +7,62 @@ var server = http.Server(app);
 var io = require('socket.io').listen(server);
 var request = require("request");
 var sentiment = require('sentiment');
+var googleTranslate = require('google-translate')("AIzaSyCowCpKjO9GzU3xL55Ict4KnUy9PjqyQvE");
 
 var usernameToSocket = {};
 
 var countryCodes = ["en-us", "de-de", "en-au", "en-ca", "es-es", "en-gb", "en-ie", "en-in", "es-mx", "en-nz", "fr-ca", "fr-fr", "it-it", "ja-jp", "nl-nl", "pt-br", "zh-cn"];
 
-var cache = {};
-
 io.on('connection', function(socket) {
     console.log("connection");
     
     socket.currentIteration = 0;
-    var articleObjects = [];
+    var articleObjects = {};
     
-    function next(code, data) {
-        var articleObject = data.value[socket.currentIteration];
+    function translate(str) {
+        //var url = "https://www.googleapis.com/language/translate/v2?key=" + api_key + "&q=hello%20world&source=en";
+        return str;
+    }
+    
+    function next(code, data, first) {
+        if (data.value === undefined) {
+            console.log("Error on line 29 of server.js");
+            return;
+        }
         
+        if (first) {
+            articleObjects[code] = [];
+        }
+        var articleObject = data.value[socket.currentIteration];
         var newObject = {};
         
-        newObject["title"] = articleObject["name"];
-        newObject["url"] = articleObject["url"];
-        newObject["category"] = articleObject["category"];
+        if (articleObject !== undefined) {
         
+        
+            newObject["title"] = articleObject["name"];
+            newObject["url"] = articleObject["url"];
+            newObject["category"] = articleObject["category"];
+        
+        }
         var articleOptions = {
           url: newObject["url"]
         };
         
             request(articleOptions, function(error, response, articleHTML) {
-                newObject["sentiment"] = sentiment(articleHTML);
-                articleObjects[socket.currentIteration] = newObject;
+                newObject["sentiment"] = sentiment(translate(articleHTML));
+                articleObjects[code][socket.currentIteration] = newObject;
                 
                 socket.currentIteration++;
                 if (socket.currentIteration == data.value.length) {
                     var dataObject = {
-                        "articleObjects": articleObjects,
+                        "articleObjects": articleObjects[code],
                         "region": code
                     };
-                    socket.emit("info data", dataObject)
+                    socket.emit("info data", dataObject);
+                    articleObjects[code] = [];
+                    return;
                 } else {
-                    next(code, data);
+                    next(code, data, first);
                 }
             });
     }
@@ -61,24 +78,22 @@ io.on('connection', function(socket) {
         };
         
         request(options, function(error, response, data) {
-            console.log(data);
-            
-            cache[url] = data;
             
             data = JSON.parse(data);
             
-            next(countryCode, data);
+            next(countryCode, data, true);
         });
         
     }
+    
+    getArticles(countryCodes[1], function(data) {
+        console.log(data);
+    });
     
     getArticles(countryCodes[0], function(data) {
         console.log(data);
     });
     
-    io.on("sentiment", function(data) {
-        console.log(data);
-    });
 });
 
 function send404Response(response) {
@@ -93,5 +108,8 @@ function send404Response(response) {
 app.use(express.static(__dirname + '/public'));
 
 server.listen(process.env.PORT, function() {
-    console.log('Server listening at port 3000');
+    console.log("Listening on 3000...");
+    googleTranslate.translate('Mi perro come toda la comida', 'en', function(err, translation) {
+      console.log(translation);
+    });
 });
