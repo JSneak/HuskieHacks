@@ -9,6 +9,7 @@ var regionNameToLetters = {"de-de": "DE", "en-au": "AU", "en-ca": "CA", "es-es":
 var countryObject = function() {
   this.titles = [];
   this.sentiment = [];
+  this.urls = [];
 }
 var countries = {};
 var table = document.getElementById('tableBoss');
@@ -46,7 +47,7 @@ function tableArticles()
     $("table").html("<thead><tr><th>Title</th><th>Sentiment</th></tr></thead>"); //reset table
     for (var w = 0; w <= countryObj.titles.length-1; w++)
     {
-        $("table").append($("<tr><td>" + countryObj.titles[w] + "</td><td>" + countryObj.sentiment[w] + "</td></tr>"));
+        $("table").append($("<tr><td><a target='_blank' href='" + countryObj.urls[w] + "'>" + countryObj.titles[w] + "</a></td><td>" + countryObj.sentiment[w] + "</td></tr>"));
     }
     
     
@@ -118,6 +119,7 @@ socket.on("info data", function(data){
     {
     	newObject.titles.push(objects[i].title);
     	newObject.sentiment.push(objects[i].sentiment.score);
+    	newObject.urls.push(objects[i].url);
     }
     countries[region] = newObject;
 });
