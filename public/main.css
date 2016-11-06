@@ -13,16 +13,28 @@
 
 .overall {
   text-align:center;
+  color: white;
+  padding:20px;
+  position:absolute;
+  left:0;
+  top:30px;
+  z-index:50;
+}
+
+rect {
+  margin:0 auto;
+  text-align: center;
 }
 
 #tableBoss
 {
-  margin-left: 400px;
+  font-size:16px;
+  color: white;
 }
 
 #regions_div
 {
-	margin-left: 240px;
+    margin: 0 auto;
     width: 83%;
     height: 720px;
 }
@@ -35,9 +47,10 @@
   background-color: #2e353d;
   position: fixed;
   top: 0px;
-  width: 300px;
+  width: 250px;
   height: 100%;
   color: #e1ffff;
+  z-index:100;
 }
 .nav-side-menu .brand {
   background-color: #23282e;
@@ -137,7 +150,7 @@
   -ms-transition: all 1s ease;
   transition: all 1s ease;
 }
-@media (max-width: 767px) {
+@media (max-width: 23432px) {
   .nav-side-menu {
     position: relative;
     width: 100%;
@@ -151,8 +164,8 @@
     top: 10px;
     z-index: 10 !important;
     padding: 3px;
-    background-color: #ffffff;
-    color: #000;
+    background-color: #000;
+    color: #fff;
     width: 40px;
     text-align: center;
   }
@@ -163,7 +176,7 @@
     line-height: 50px !important;
   }
 }
-@media (min-width: 767px) {
+@media (min-width: 8345834px) {
   .nav-side-menu .menu-list .menu-content {
     display: block;
   }
@@ -223,8 +236,7 @@ td{
 
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 body{
-  background: -webkit-linear-gradient(left, #25c481, #25b7c4);
-  background: linear-gradient(to right, #25c481, #25b7c4);
+  background-color: black;
   font-family: 'Roboto', sans-serif;
 }
 section{
@@ -269,3 +281,23 @@ section{
 ::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
 }
+.container {
+  background-color: black;
+  width:100%;
+  height:100%;
+}
+
+
+* {
+  bacakground-color: black;
+}
+
+
+
+
+
+
+
+
+
+

@@ -38,7 +38,7 @@ var colors = {
   "DE": 0,
   "EG": 0,
   "GR": 0,
-  "IT": 500,
+  "IT": 0,
 };
 var countryArray = ['US','RU','GB','FR','AU','BR','IN','CH','JP','CA','KR','AR','ZA','MX','ES','DE','EG','GR','IT'];
     
@@ -49,64 +49,14 @@ function tableArticles()
     $("table").html("<thead><tr><th>Title</th><th>Sentiment</th></tr></thead>"); //reset table
     for (var w = 0; w <= countryObj.titles.length-1; w++)
     {
-        $("table").append($("<tr><td><a target='_blank' href='" + countryObj.urls[w] + "'>" + countryObj.titles[w] + "</a></td><td>" + countryObj.sentiment[w] + "</td></tr>"));
+        $("table").append($("<tr><td><a style='color:white;text-decoration:underline;font-size:16px;' target='_blank' href='" + countryObj.urls[w] + "'>" + countryObj.titles[w] + "</a></td><td>" + countryObj.sentiment[w] + "</td></tr>"));
     }
     
     
     
 }
     
-google.charts.load('current', {
-  callback: function () {
-    var data = google.visualization.arrayToDataTable([
-      ['Country', 'Popularity'],
-      ['US', colors["US"],],
-      ['RU', colors["RU"],],
-      ['GB', colors["GB"],],
-      ['FR', colors["FR"],],
-      ['AU', colors["AU"],],
-      ['BR', colors["BR"],],
-      ['IN', colors["IN"],],
-      ['CH', colors["CH"],],
-      ['JP', colors["JP"],],
-      ['CA', colors["CA"],],
-      ['KR', colors["KR"],],
-      ['AR', colors["AR"],],
-      ['ZA', colors["ZA"],],
-      ['MX', colors["MX"],],
-      ['ES', colors["ES"],],
-      ['DE', colors["DE"],],
-      ['EG', colors["EG"],],
-      ['GR', colors["GR"]],
-      ['IT', colors["IT"],],
-
-    ]);
-
-    var view = new google.visualization.DataView(data);
-    view.setColumns([0, 1]);
-  
-    var options = 
-    {
-      colorAxis: {colors: ['#FF0F00', '#00FFD4']},
-      legend:  {textStyle: {color: 'black', fontSize: 20, italic: true}}
-    }
-
-    var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-
-    google.visualization.events.addListener(chart, 'select', function () {
-      showNews();
-      var selection = chart.getSelection();
-      coolCountryCode = countryArray[selection[0].row];
-      tableArticles();
-      if (selection.length > 0) {
-        //window.open('http://' + data.getValue(selection[0].row, 2), '_blank');
-      }
-    });
-
-    chart.draw(view, options);
-  },
-  packages:['geochart']
-});
+refreshMap();
 
 function updateWorldHappiness() {
   var sum = 0;
@@ -114,7 +64,7 @@ function updateWorldHappiness() {
     sum += countries[countryName].overall_sentiment;
   }
   var average = (sum) / countries_loaded; // subtract 500 for the country that stays at 500
-  $(".overall").text("Overall World Happiness(-250 to 250): " + average);
+  $(".overall").text("Overall World Happiness(-250 to 250): " + Math.ceil(average));
 }
 
 socket.on("info data", function(data){
@@ -170,7 +120,7 @@ function refreshMap() {
   google.charts.load('current', {
   callback: function () {
     var data = google.visualization.arrayToDataTable([
-      ['Country', 'Happiness(0-500)'],
+      ['Country', 'Happiness'],
       ['US', colors["US"],],
       ['RU', colors["RU"],],
       ['GB', colors["GB"],],
@@ -190,7 +140,8 @@ function refreshMap() {
       ['EG', colors["EG"],],
       ['GR', colors["GR"]],
       ['IT', colors["IT"],],
-
+      ['KSM', 40,],
+      ['KSJ', -40,]
     ]);
 
     var view = new google.visualization.DataView(data);
@@ -198,8 +149,9 @@ function refreshMap() {
   
     var options = 
     {
-      colorAxis: {colors: ['#FF0F00', '#00FFD4']},
-      legend:  {textStyle: {color: 'black', fontSize: 20, italic: true}}
+      colorAxis: {colors: ['red', 'orange', 'yellow', 'green', '#3872d1']},
+      legend:  {textStyle: {color: 'white', fontSize: 20, italic: true}},
+      backgroundColor: '#000000'
     }
 
     var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
@@ -227,7 +179,7 @@ countryAverage is the average sum between -500, 500 of the country
 function showCountry(countryName, countryAverage) 
 {
   console.log(countryName + ": " + countryAverage);
-  colors[countryName] = countryAverage + 250;
+  colors[countryName] = countryAverage;
   
   refreshMap();
   
@@ -237,4 +189,6 @@ $(window).on("load resize ", function() {
   var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
   $('.tbl-header').css({'padding-right':scrollWidth});
 }).resize();
+
+setInterval(refreshMap, 10000);
 
