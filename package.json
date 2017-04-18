@@ -1,7 +1,7 @@
 {
-  "name": "news-visual",
-  "version": "0.0.0",
-  "description": "Displaying news",
+  "name": "news-mood",
+  "version": "1.0.0",
+  "description": "Running news through sentiment analysis",
   "main": "server.js",
   "author": "HuskieHack Squad",
   "scripts": {

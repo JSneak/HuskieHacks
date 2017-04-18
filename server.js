@@ -7,7 +7,6 @@ var server = http.Server(app);
 var io = require('socket.io').listen(server);
 var request = require("request");
 var sentiment = require('sentiment');
-var googleTranslate = require('google-translate')("AIzaSyCowCpKjO9GzU3xL55Ict4KnUy9PjqyQvE");
 
 var usernameToSocket = {};
 
@@ -86,7 +85,8 @@ io.on('connection', function(socket) {
         var options = {
           url: url,
           headers: {
-            'Ocp-Apim-Subscription-Key': 'eafc9fb746b14f14800a969b09915c82'
+			 //https://www.microsoft.com/cognitive-services/en-us/bing-news-search-api
+            'Ocp-Apim-Subscription-Key': 'YOUR API KEY HERE'
           }
         };
         

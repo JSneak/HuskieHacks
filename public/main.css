@@ -61,6 +61,7 @@ rect {
 }
 .nav-side-menu .toggle-btn {
   display: none;
+  color:white;
 }
 .nav-side-menu ul,
 .nav-side-menu li {
@@ -164,8 +165,8 @@ rect {
     top: 10px;
     z-index: 10 !important;
     padding: 3px;
-    background-color: #000;
-    color: #fff;
+    background-color: white;
+    color: white;
     width: 40px;
     text-align: center;
   }

@@ -1,0 +1,10 @@
+Huskie Hacks Crowd Favorite Winner
+Created in less than 24 hours
+Go here to get an API Key:
+https://www.microsoft.com/cognitive-services/en-us/bing-news-search-api
+
+Instructions for running:
+Use node.js to run server.js
+Then open the index file in the public folder
+Wait up to a minute for all the api requests to go through
+Click on countries to see a list of news articles and their sentiments
